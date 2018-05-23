@@ -5,7 +5,7 @@ Protists in the guts and feces of German Cockroaches
 
 This fileset contains QIIME commands and outputs used to carry out the analysis in the manuscript:
 
-KAKUMANU ML, MARITZ JM, CARLTON JM and, SCHAL C. Overlapping Community Composition of Gut and Fecal Microbiomes in Lab-Reared and Field-Collected German Cockroaches, which is currently under review at AEM.
+Kakumanu ML., Maritz JM, Carlton JM and Schal C. Overlapping Community Composition of Gut and Fecal Microbiomes in Lab-Reared and Field-Collected German Cockroaches, which is currently under review at AEM.
 
 Gut, fecal and whole insect samples from lab-reared and field-collected German Cockroaches were subjected to marker gene sequencing for the 16S rRNA and 18S rRNA genes.
 
