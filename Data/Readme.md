@@ -5,7 +5,7 @@ CR_18S_run1_mapp_QIIME.txt
 
 CR_18S_run2_mapp_QIIME.txt
 
-CR_18S_mapp.R
+CR_18S_mapp_R.txt
 
 
 ### Raw OTU table:
