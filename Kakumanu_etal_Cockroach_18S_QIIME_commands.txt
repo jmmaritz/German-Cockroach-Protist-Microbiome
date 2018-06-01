@@ -1,5 +1,5 @@
 
-## 18S rRNA gene amplicons - EUKARYOTE WORKFLOW
+## 18S rRNA gene amplicon V9 region workflow
 
 ## QIIME data analysis workflow used in manuscript:
 ## Overlapping Community Composition of Gut and Fecal Microbiomes in Lab-Reared and Field-Collected German Cockroaches
@@ -11,10 +11,10 @@
 
 
 
-############### Demultiplexing Raw Data - 18S rRNA ##############
+############### Demultiplexing Raw Data - 18S rRNA gene ##############
 
-## The adapter file includes both V9 region PCR primer sequences (1391F and EUKBR) and their reverse compliments for 'simple' clipping
-## As well as the 1391F sequence and r/c of EUKBR for 'palindrome' clipping
+## The adapter file included both V9 region PCR primer sequences (1391F and EUKBR) and their reverse compliments for 'simple' clipping
+## As well as the 1391F sequence and the reverse compliment of EUKBR for 'palindrome' clipping
 
 #!/bin/sh
 
