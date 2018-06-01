@@ -3,7 +3,7 @@ Protists in the guts and feces of German Cockroaches
 
 ### DESCRIPTION
 
-This fileset contains QIIME commands and outputs used to carry out the analysis in the manuscript:
+This fileset contains QIIME and R commands and outputs used to carry out the 8S rRNA gene analysis in the manuscript:
 
 Kakumanu, M. L., Maritz, J. M., Carlton, J. M., and Schal, C. Overlapping Community Composition of Gut and Fecal Microbiomes in Lab-Reared and Field-Collected German Cockroaches, which is currently under review at AEM.
 
