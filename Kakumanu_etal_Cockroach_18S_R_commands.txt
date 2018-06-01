@@ -1,0 +1,139 @@
+
+## R Diversity Analysis Workflow
+
+## R data analysis workflow used in manuscript:
+## Overlapping Community Composition of Gut and Fecal Microbiomes in Lab-Reared and Field-Collected German Cockroaches
+## KAKUMANU ML, MARITZ JM, CARLTON JM, SCHAL C.
+
+
+
+############### Load in the Data ##############
+
+library("phyloseq")
+library("ggplot2")
+library("extrafont")
+library("vegan")
+
+setwd("~/Desktop/Cockroach/18S/R_files")
+load("~/Desktop/Cockroach/18S/R_files/CR_analysis.RData")
+
+otufile = "CR_18S_otu_table_w_tax_EUK_NOhost_af_min5000_filtered_sorted.biom"
+mapfile = "CR_mapp_R.txt"
+
+qiimedata = import_biom(BIOMfilename=otufile)
+mapdata = import_qiime(mapfilename=mapfile)
+
+CR_18S = merge_phyloseq(qiimedata, mapdata)
+
+Variables=data.frame(sample_data(CR_18S))
+
+SampleID = Variables$SampleID
+Source = Variables$Source
+Gender = Variables$Gender
+Rep = Variables$Reps
+Location = Variables$Location1
+Environment = Variables$Environment
+
+
+############### Beta Diversity ##############
+
+CR.18S.nmds.bray = metaMDS(t(otu_table(CR_18S)), distance = "bray", k=2, trymax = 200)
+
+CR.18S.nmds.bray.dist = metaMDSredist(CR.18S.nmds.bray)
+stressplot(CR.18S.nmds.bray)
+
+CR.18S.nmds.bray.df = data.frame(scores(CR.18S.nmds.bray, dispaly=c("sites")), Environment, Source, Gender, Location, Rep)
+
+CR.nmds = ggplot(CR.18S.nmds.bray.df, aes(x=NMDS1, y=NMDS2, shape=Location, fill=Source, label = SampleID)) + geom_point(size=2, aes(fill=NULL))
+CR.nmds = CR.nmds + geom_point(size=2, aes(alpha = Gender))
+CR.nmds = CR.nmds + scale_alpha_manual(values = c(1, 0.25))
+CR.nmds = CR.nmds + scale_shape_manual(values = c(23,22,21,24))
+CR.nmds = CR.nmds + scale_fill_manual(values=c("#0000ff", "#ffff00", "#40ff00"))
+CR.nmds = CR.nmds + guides(shape = guide_legend(override.aes = list(size=3, shape = c(23,22,21,24), fill = "black", alpha = c(1,1,1,1))))
+CR.nmds = CR.nmds + guides(fill = guide_legend(override.aes = list(size=3, shape = 21, fill = c("#0000ff", "#ffff00", "#40ff00"), alpha = c(1,1,1))))
+CR.nmds = CR.nmds + guides(alpha = guide_legend(override.aes = list(size=3, shape = 21, fill = "black", colour="black", alpha = c(1,0.25))))
+CR.nmds = CR.nmds + theme(axis.title.y=element_text(size=10, family="Arial"), axis.text.y=element_text(size=10, family="Arial"), axis.title.x=element_text(size=10, family="Arial"), axis.text.x=element_text(size=10, family="Arial"))
+CR.nmds = CR.nmds + theme(legend.title=element_text(size=10, family="Arial", face="bold"), legend.text=element_text(size=10, family="Arial"), legend.key=element_rect(fill="white"), panel.grid.minor=element_blank(), legend.justification="right", legend.key.size=unit(0.6, "cm"))
+CR.nmds = CR.nmds + theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
+
+# get the legend to make a common one
+get_legend<-function(myggplot){
+  tmp <- ggplot_gtable(ggplot_build(myggplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
+
+CR.legend = get_legend(CR.nmds)
+
+pdf(file="CR_legend.pdf", width=1.5, height=3.3, bg="white", useDingbats = FALSE)
+plot(CR.legend)
+dev.off()
+
+# remove legend
+CR.nmds = CR.nmds + theme(legend.position="none", plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"))
+
+pdf(file="CR_beta.pdf", width=3.3, height=3.3, bg="white", useDingbats = FALSE)
+plot(CR.nmds)
+dev.off()
+
+## Test for differences
+CR.bray.mat = as.matrix(CR.18S.nmds.bray.dist)
+CR.bray.mat = CR.bray.mat[order(row.names(CR.bray.mat)), ]
+CR.bray.mat = CR.bray.mat[, order(colnames(CR.bray.mat))]
+CR.bray.mat.dist = as.dist(CR.bray.mat)
+
+CR.all.test = adonis(CR.bray.mat.dist ~ Source + Environment + Location + Gender, data = CR.18S.nmds.bray.df, permutations = 10000)
+levs = rownames(CR.all.test$aov.tab)
+CR.all.pvals = rbind(Variable = levs[1:4], R2 = CR.all.test$aov.tab[,5][1:4], pval = CR.all.test$aov.tab[,6][1:4], bonf = p.adjust(CR.all.test$aov.tab[,6][1:4], method='bonferroni'), fdr = p.adjust(CR.all.test$aov.tab[,6][1:4], method='fdr'))
+
+
+############### Alpha Diversity ##############
+
+ShannonCR = read.table("CR_18S_otu_table_w_tax_EUK_af_min5000_filtered_sorted_alpha_5000.txt")
+ShannonCR = ShannonCR[order(row.names(CR.18S.nmds.bray.df)),]
+
+CR.18S.nmds.bray.df = cbind(CR.18S.nmds.bray.df, ShannonCR)
+CR.18S.nmds.bray.df$Location = factor(CR.18S.nmds.bray.df$Location, levels = c("Lab", "Apt1", "Apt2", "Apt3"))
+
+CR.alpha = ggplot(CR.18S.nmds.bray.df, aes(x=Location, y=ShannonCR)) + geom_boxplot(aes(fill=Source, alpha=Gender))
+CR.alpha = CR.alpha + ylab("Shannon Diversity Index")
+CR.alpha = CR.alpha + scale_fill_manual(values=c("#0000ff", "#ffff00", "#40ff00"))
+CR.alpha = CR.alpha + scale_alpha_manual(values = c(1, 0.25))
+CR.alpha = CR.alpha + theme(axis.title.y=element_text(size=10, family="Arial"), axis.text.y=element_text(size=10, family="Arial"), axis.title.x=element_blank(), axis.text.x=element_text(size=10, family="Arial"))
+CR.alpha = CR.alpha + theme(plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm"), legend.position = "none", panel.grid.minor=element_blank())
+
+pdf(file="CR_alpha.pdf", width=3.3, height=3.3, bg="white", useDingbats = FALSE)
+plot(CR.alpha)
+dev.off()
+
+
+## Test for differences in major categories
+wilcox.test(CR.18S.nmds.bray.df$shannon ~ CR.18S.nmds.bray.df$Environment)
+
+kruskal.test(CR.18S.nmds.bray.df$shannon ~ CR.18S.nmds.bray.df$Source)
+
+wilcox.test(CR.18S.nmds.bray.df$ShannonCR ~ CR.18S.nmds.bray.df$Gender)
+
+kruskal.test(CR.18S.nmds.bray.df$shannon ~ CR.18S.nmds.bray.df$Location)
+
+## Location was significant, post hoc test for individual differences
+dist.met.shannon = CR.18S.nmds.bray.df$shannon
+
+levs.location = levels(CR.18S.nmds.bray.df$Location)
+
+phoc.test.location = function(x){
+  spair = (CR.18S.nmds.bray.df$Location %in% x)
+  phoc = wilcox.test(dist.met.shannon[spair] ~ Location[spair], 
+                     data=CR.18S.nmds.bray.df)
+  c(x, phoc$p.value)
+}
+
+p.vals.location = combn(levs.location,2, phoc.test.location)
+p.vals.location.corrected = rbind(p.vals.location,
+                                  p.adjust(p.vals.location[3,], 
+                                           method="bonferroni"),
+                                  p.adjust(p.vals.location[3,],
+                                           method="fdr"))
+
+save.image("~/Desktop/Cockroach/18S/R_files/CR_analysis.RData")
