@@ -346,5 +346,5 @@ srun alpha_diversity.py -i CR_18S_otu_table_w_tax_EUK_NOhost_af_min5000_filtered
 	-m shannon -o CR_18S_otu_table_w_tax_EUK_af_min5000_filtered_sorted_alpha_5000.txt
 
 # Comparison and statistical tests of Alpha diversity and all Beta diversity calculations were performed in R
-	# See CR_18S_analysis_R.txt
+	# See Kakumanu_etal_Cockroach_18S_R_commands.txt
 	
