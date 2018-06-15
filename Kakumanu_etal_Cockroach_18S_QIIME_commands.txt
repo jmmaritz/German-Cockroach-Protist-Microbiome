@@ -13,8 +13,13 @@
 
 ############### Demultiplexing Raw Data - 18S rRNA gene ##############
 
-## The adapter file included both V9 region PCR primer sequences (1391F and EUKBR) and their reverse compliments for 'simple' clipping
-## As well as the 1391F sequence and the reverse compliment of EUKBR for 'palindrome' clipping
+## Includes steps to remove adapters, join paired-end reads, demultiplex and quality filter
+
+## Trimming amplicon data with Trimmomatic requires you to create a custom adapter file
+## This file ('V9_adapters_palindrome.fa' in these commands) contained 6 sequences in FASTA format:
+## The PCR primer sequences (1391F and EUKBR) and their reverse compliments for 'simple' clipping
+## The PCR primer sequences (1391F and EUKBR) for 'palindrome' clipping
+## See the Trimmomatic manual for formatting requirements
 
 #!/bin/sh
 
