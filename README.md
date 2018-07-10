@@ -21,6 +21,7 @@ Alternatively, I have provided QIIME formatted [OTU files](/Data) from the origi
 ### REQUIREMENTS:
 
 Trimmomatic 0.32, Qiime 1.9.0, ea_utils 1.1.2, python 2, USEARCH 8.0.1, blast 2.2.22
+
 R packages: phyloseq 1.20.0, vegan 2.4-3, ggplot2 2.2.1, extrafont 0.17, gridExtra 2.2.1
 
 [Paper]: http://aem.asm.org/content/early/2018/06/25/AEM.01037-18
