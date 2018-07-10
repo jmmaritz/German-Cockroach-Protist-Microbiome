@@ -1,11 +1,11 @@
 
-## 18S rRNA gene amplicon V9 region workflow
+## 18S rRNA gene amplicons - QIIME WORKFLOW
 
 ## QIIME data analysis workflow used in manuscript:
 ## Overlapping Community Composition of Gut and Fecal Microbiomes in Lab-Reared and Field-Collected German Cockroaches
-## KAKUMANU ML, MARITZ JM, CARLTON JM, SCHAL C.
+## Kakumanu M. L., Maritz J. M., Carlton J. M., Schal C. (2018) Appl Environ Microbiol 84: 17.
 
-## All data analysis carried out on New York University's High Performance Compute cluster
+## All data analysis was carried out on New York University's High Performance cluster
 ## Parameters and file paths may vary on your system
 ## Edit commands as necessary to replicate these data analysis locally
 
